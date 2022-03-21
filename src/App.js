@@ -1,12 +1,26 @@
 import React from 'react';
 import './App.css';
-import data from "./data.json";
+import { getPeople } from "./api/people";
+import { useState,useEffect } from 'react';
 
 function App() {
+
+  const [people, setPeople] = useState([]);
+  const [error, setError] = useState({hasError:false})
+
+  useEffect(() => {
+    getPeople().then(data=>setPeople(data.results)).catch(handleError);
+  }, [])
+  
+  const handleError=err=>{
+    setError({hasError:true,message:err.message})
+  }
+
   return (
    <>
      <ul>
-       {data.results.map(character =>(
+       {error.hasError &&<>{error.message}</>}
+       {people.map(character =>(
          <li key={character.name}>{character.name}</li>
        ))}
      </ul>
